@@ -1,0 +1,127 @@
+
+- exit => OK
+- ctrl + c => OK
+- < end.txt wc -l < file.txt cat
+=> Error to handle
+- echo '"SALUT'"
+=> Quotes are not closed, error to manage
+- entree => OK
+- Que des espaces : OK
+=> Devrait renvoyer a la ligne.
+TO TEST : DONE
+$> echo hola > bonjour
+$> echo hey > hello
+$> <bonjour >hello
+$> cat bonjour 
+$> cat hello
+
+cat > ok 
+...
+...
+cat < ok => DONE
+- Gestion env + update => DONE
+
+
+- > - | - < - \ 
+=> Erreurs a gerer pour arreter le prog.
+
+- Minishell>$echo -nnn ------------------n
+malloc(): corrupted top size
+
+- echo >< | echo > < + gestion | | + etc.
+=> SEGFAULT
+Gerer les erreurs de syntaxe !
+
+- $VAR.ENV.:
+Check dans la tokenisation > Checker dans la string : 
+1. tant que str & que pas $
+2. puis que pas autre $
+3. Check si var. d'env. 
+4. On modifie
+=> Check AVANT la gestion des quotes !
+
+- Try a command like : echo "cat lol.c | cat > lol.c"
+=> Need to put things inside quotes in a node (like option)
+& not creating different nodes.
+- Absolute path => Check how to manage it
+
+- REVOIR FONCTION QUOTES ! => OK ?
+On avance de gauche a droite > On check chaque quote,
+si un niveau de quote on retire, sinon d'autres dedans,
+on affiche ce qu'il y a l'interieur.
+
+Quand guillemets tu ouvres, puis
+si meme guillemets et rien avant > on ouvre.
+Sinon si meme guillemets > Ferme et i--;
+Sinon, on ajoute le texte : 
+si i != 0, pb de guillemets.
+
+- Quotes avec $ => Pas besoin des doubles quote pour
+avoir la var. d'env.
+Par contre, si ne trouve pas => Retire le bout.
+=> Gerer dans le parsing : 
+- Si tu trouves double quotes & 
+
+JEZA : TO DO
+
+- Gerer echo SALUT > OK | cat OK => DONE with check_line function because
+i'm waiting for each block, so the end of each cmd, then cat can access to ok file.
+=> So how to do it ??
+- Tester de nouveau les file seuls ! + voir pour append/output or else.
+=> DONE : i'm can now verify if there is one file if it exists or not.
+=> BUT it's not totally good bce if i have a file & then a pipe, ça
+fait la redirection du file sur STDOUT ce qui fait qu'il envoie les données à
+cat alors que normalement cat ne reçoit rien.
+idée : créer une autre fonction d'output pour l'output seul. => DONE
+
+- Mettre l'env. dans une structure et tout remplacer. => DONE
+- Le mettre à jour et pouvoir y accéder, actualisé, à tout moment. => DONE
+- Absolute path : => DONE
+Checker si abolute path : Si je rencontre un slash alors absolute path !
+On va pas chercher le path, on l'envoie direct a execve.
+
+
+< ok | cat / wc => why send it to the cmd ? => DONE
+
+<< end | cat => OK
+cat | < end.txt => SEGFAULT
+
+- Checker parsing & execution => Invalid read of size.
+- Parsing : Check des files => Faire toutes les combinaisons : 
+1. Output output
+2. Output append
+3. Append append
+4. Append output
+=> Check si besoin de le faire pour here_doc aussi ?
+
+- Quotes : 
+Important => Les quotes doivent être gérés dès le début avant de split la ligne de commande.
+1. Mettre la gestion des quotes au début, pour gérer directement l'input.
+2. Lui envoyer une string au lieu d'un tableau de tableau !
+
+- Echo : 
+1. Gérer tous les cas d'erreurs qui n'ont pas été fait (fonction error)
+2. Voir comment gérer la var. d'env au parsing (?) => Si existe pas > Retiré de la ligne de cmd.
+3. Problème du split à voir => Parce que si var. d'env géré avant + $ > Pas besoin.
+=> Si echo a $HOME il print home et pas la var. d'env.
+=> Par contre il retire le $.
++ Gerer les quotes avant echo.
+
+- Exit : DONE => Just need to fix memory errors with parsing.
+1. Revoir la gestion d'erreurs !
+
+Attention : Si en input j'ai export HOLA=ok le parsing ne me
+met pas d'espace !!
+
+Exit : 
+Check pour sortir du prog.
+
+Unset : 
+Can't find the var. i've just added. => DONE
+Check errors like export.
+
+pwd : 
+Errors
+
+CD : 
+Si cd xxx puis env => Marche plus
