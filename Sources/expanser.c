@@ -106,19 +106,27 @@ ReplaceEnvVars
 char	*extract_var(char *str)
 {
 	size_t	i;
+	int		len;
 	char	*var_env;
 	char	*result;
 
 	i = 0;
-	if (str[i] == '$')
+	len = 0;
+	while (str[i])
 	{
+		if (str[i] == '$')
+		{
+			while (str[i] || str[i] != ' ')
+				len++;
+			i++;
+			var_env = ft_substr(str + i, 0, ft_strlen(str + i));
+			result = getenv(var_env);
+			if (result == NULL)
+				return (perror("This var. is not existing in the env.\n"),
+					free(var_env), NULL);
+			return (free(var_env), result);
+		}
 		i++;
-		var_env = ft_substr(str + i, 0, ft_strlen(str + i));
-		result = getenv(var_env);
-		if (result == NULL)
-			return (perror("This var. is not existing in the env.\n"),
-				free(var_env), NULL);
-		return (free(var_env), result);
 	}
 	perror("Can't get the var. of env.");
 	return (NULL);
@@ -155,21 +163,33 @@ char	*get_the_var_of_env(t_final_token *node)
 	t_final_token	*tmp;
 	char	*var;
 	size_t	i;
-
+	int	len = 0;
 	tmp = node;
-	if (check_var(node) == 1)
-	{
-		perror("Can't get var. of env bce of quotes\n");
-		exit(EXIT_FAILURE);
-	}
+	// if (check_var(node) == 1)
+	// {
+	// 	perror("Can't get var. of env bce of quotes\n");
+	// 	exit(EXIT_FAILURE);
+	// }
 	while (tmp)
 	{
+
 		i = -1;
 		while (tmp->content[++i])
 		{
 			while (tmp->content[i] == ' ')
 				i++;
+			len = len_of_var_of_env(tmp->content);
 			var = extract_var(tmp->content + i);
+			if (var == NULL)
+				return (NULL);
+			printf("var = %s\n", var);
+			printf("i = %c - %d\n", tmp->content[i], len);
+			// replace_var_of_env(tmp->content, var, i);
+			if (tmp->content[i + 2] == 0)
+				tmp->content = ft_strdup(var);
+			else
+				tmp->content = ft_strjoin(var, tmp->content + i);
+			printf("var d'env changee :%s \n", tmp->content);
 			if (!var)
 				return (NULL);
 			return (var);
@@ -177,6 +197,42 @@ char	*get_the_var_of_env(t_final_token *node)
 		tmp = tmp->next;
 	}
 	return (perror("Can't get this var.\n"), NULL);
+}
+
+void	replace_var_of_env(char *content, char *var, int i)
+{
+	//gerer le cas des quotes ou non avec l'enum 
+
+	// while (content[i] || content[i] != ' ')
+	// 	i++;
+	if (content[i] == 0)
+		content = ft_strdup(var);
+	else
+		content = ft_strjoin(var, content + i);
+	printf("var d'env changee :%s \n", content);
+
+}
+
+int		len_of_var_of_env(char *content)
+{
+	int	i;
+	int	len;
+
+	i = 0;
+	len = 0;
+	while (content[i])
+	{
+		if (content[i] == '$')
+		{
+			while (content[i] && content[i] != ' ')
+			{
+				len++;
+				i++;
+			}
+		}
+		i++;
+	}
+	return (len);
 }
 
 /*
@@ -207,7 +263,7 @@ Expanser
 // }
 
 /*
-GESTION DES GUILLEMETS :
+GESTION DES GUILLEMETS : 
 - Sans guillemets : echo hello world
 La commande est interprétée comme trois tokens distincts : echo, Hello, World.
 - Avec simple quotes : echo 'Hello World'

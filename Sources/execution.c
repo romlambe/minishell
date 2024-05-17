@@ -32,7 +32,8 @@ int	manage_input_redirection(t_final_token **current, char *node_content, int fi
 	}
 	dup2(first_file, STDIN_FILENO);
 	close(first_file);
-	*current = (*current)->next;
+	if ((*current)->next)
+		*current = (*current)->next;
 	return (first_file);
 }
 
@@ -46,7 +47,8 @@ int	manage_solo_input_redirection(t_final_token **current, char *node_content, i
 	}
 	// dup2(first_file, STDIN_FILENO);
 	close(first_file);
-	*current = (*current)->next;
+	if ((*current)->next)
+		*current = (*current)->next;
 	return (first_file);
 }
 
@@ -108,6 +110,14 @@ int	manage_append_redirection(char *node_content, int last_file)
 
 void	exec_cmd_with_pipe(t_final_token **current, t_minishell *exit_code, int last_file, t_minishell *minishell)
 {
+	// char	**args;
+
+	// args = ft_split((*current)->content, ' ');
+	// if (ft_strncmp((*current)->content, "exit", 4) != 0)
+	// {
+	// 	builtin_exit(args, exit_code);
+	// 	free_tab(args);
+	// }
 	if (is_built_in((*current)->content) == 0)
 		redir_builtin((*current)->content, exit_code, minishell, last_file);
 	else
@@ -121,6 +131,14 @@ void	exec_cmd_with_pipe(t_final_token **current, t_minishell *exit_code, int las
 
 void	exec_simple_cmd(t_final_token **current, t_minishell *exit_code, t_minishell *minishell)
 {
+	// char	**args;
+
+	// args = ft_split((*current)->content, ' ');
+	// if (ft_strncmp((*current)->content, "exit", 4) != 0)
+	// {
+	// 	builtin_exit(args, exit_code);
+	// 	free_tab(args);
+	// }
 	if (builtin_or_not_builtin((*current)->content, minishell, exit_code) == 0)
 		;
 	else
@@ -139,7 +157,8 @@ void	exec_simple_cmd(t_final_token **current, t_minishell *exit_code, t_minishel
 void	manage_here_doc(t_final_token **current, t_minishell *exit_code, char *content, int alone)
 {
 	handle_here_doc(content, exit_code, alone);
-	*current = (*current)->next;
+	if ((*current)->next)
+		*current = (*current)->next;
 }
 
 int	manage_redirection_input(t_final_token **current, t_minishell *exit_code, int first_file)
@@ -150,7 +169,7 @@ int	manage_redirection_input(t_final_token **current, t_minishell *exit_code, in
 	if ((*current)->type == INPUT && ((*current)->next
 			&& (*current)->next->type == CMD))
 		first_file = manage_input_redirection(current, (*current)->content, first_file);
-	else if ((*current)->type == HERE_DOC && ((*current)->next
+	else if ((*current)->type == HERE_DOC && ((*current)->next 
 			&& (*current)->next->type == CMD))
 		{
 			alone = 0;
@@ -238,9 +257,9 @@ void	check_line(t_final_token **lst, t_minishell *minishell, t_minishell *exit_c
 }
 
 // Alternative to the else !
-// else if ((current->type == CMD && (current->next
+// else if ((current->type == CMD && (current->next 
 		//		&& current->next->type != PIPE)) // Ne marchera pas.
-		// 	|| (current->next->next && (current->type == CMD
+		// 	|| (current->next->next && (current->type == CMD 
 		// 		&& current->next == NULL))) // Check si rien après où si redir.
 		// {
 		// 	printf("content : %s\n", current->content);
@@ -314,11 +333,11 @@ void	exec_cmd(char *cmd, t_minishell *minishell)
 }
 
 /*
-Plusieurs input à la suite puis pipe :
+Plusieurs input à la suite puis pipe : 
 1. On lit chaque fichier qu'on écrit un par un
 dans le même pipe.
 2. On crée comme un fichier 4.
-3. Ensuite on envoie dans execve ce "fichier" pour
+3. Ensuite on envoie dans execve ce "fichier" pour 
 que la cmd l'utilise et ensuite envoie le résultat dans le pipe
 vers le processus parent et que la prochaine cmd l'utilise.
 */

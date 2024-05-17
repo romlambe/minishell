@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: romlambe <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeguerin <jeguerin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 14:14:33 by jeguerin          #+#    #+#             */
-/*   Updated: 2024/05/15 15:39:34 by romlambe         ###   ########.fr       */
+/*   Updated: 2024/05/16 19:35:52 by jeguerin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int		main(int argc, char **argv, char **env)
 	while (1)
 	{
 		input = read_input();
-        if (ft_strlen(input) == 0)
+        if (ft_strlen(input) == 0 || ft_isspace(input) == 1)
         {
             rl_on_new_line();
             free(input);
@@ -91,16 +91,15 @@ int		main(int argc, char **argv, char **env)
 		token = head;
 		// printf("token = %s\n", token->content);
 		clean_token = copy_lst(token);
-		// print_clean_lst(clean_token);
+		print_clean_lst(clean_token);
 		test_redirection_input(clean_token);
-
 		final_token = final_clean_node(clean_token);
-		// print_final_lst(final_token);
-
-
+		// check_line(&clean_token, env, &exit_code);
+		get_the_var_of_env(final_token);
 		execute_commands_with_pipes_and_redirections(&final_token, minishell, &exit_code);
 		free_that_lst(&token);
 		free_that_clean_lst(&clean_token);
+		free_that_final_lst(&final_token);
 		//gerer les builtins car si je mets un espace pb
 		//pb sur pwd pour le moment
 		free(input);

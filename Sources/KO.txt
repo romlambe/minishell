@@ -84,7 +84,6 @@ On va pas chercher le path, on l'envoie direct a execve.
 < ok | cat / wc => why send it to the cmd ? => DONE
 
 << end | cat => OK
-cat | < end.txt => SEGFAULT
 
 - Checker parsing & execution => Invalid read of size.
 - Parsing : Check des files => Faire toutes les combinaisons : 
@@ -107,21 +106,57 @@ Important => Les quotes doivent être gérés dès le début avant de split la l
 => Par contre il retire le $.
 + Gerer les quotes avant echo.
 
-- Exit : DONE => Just need to fix memory errors with parsing.
-1. Revoir la gestion d'erreurs !
-
 Attention : Si en input j'ai export HOLA=ok le parsing ne me
 met pas d'espace !!
 
-Exit : 
-Check pour sortir du prog.
+Exit : DONE => But check if with pipe doesn't work. => DONE
+exit | ls => Do ls but not exit ! => OK
 
-Unset : 
+Unset : DONE
 Can't find the var. i've just added. => DONE
-Check errors like export.
+Check errors like export. => OK
 
-pwd : 
-Errors
+pwd : DONE
+- Errors => OK
+- Tester si MAJ dans l'env. => OK
+
+export :
+- Ne pas afficher la derniere ligne de l'env.
 
 CD : 
 Si cd xxx puis env => Marche plus
+- Si // on print deux slash avec \n.
+- Sinon on print un slash avec \n.
+- cd .. => 2 fois SEGFAULT
+
+
+Quotes & Var. d'env : 
+- D'abord on gere les quotes et ensuite la var. d'env.
+=> Par contre il faut gerer les quotes avant et donc reconnaitre
+le type de quotes :
+- Si simple > c'est une phrase litterale > On garde le texte.
+- Si double ou rien > c'est une variable > On change par sa valeur.
+Var. Env. : 
+- Si entre double quote ou tout seul => On met la valeur de la variable d'env.
+- Si entre si;ple quote => On laisse tel quel et on envoie a echo.
+
+Code de sortie : 
+=> Mettre a jour a chq sortie du programme.
+=> Dans le parsing > Remplacer.
+> Si code d'erreur tout seul = error
+> Si code erreur avec echo > OK
+
+Gestion d'erreurs : DONE
+Si cmd avec quotes pas fermes ! => Errors.
+
+HERE_DOC SOLO : DONE
+=> SEGFAULT
+
+cat | < end.txt : DONE
+=> SEGFAULT
+
+echo SALUT > output => Print sur le terminal et pas dans le fichier. => DONE
+
+echo : 
+Si \ alors on skip ce caractere.
+
