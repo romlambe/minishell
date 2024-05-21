@@ -78,7 +78,7 @@ void	shell_level(t_minishell *minishell);
 // char	*check_line_cmd(t_token *token);
 
 // Var. env.
-char	*get_the_var_of_env(t_final_token *node);
+void	get_the_var_of_env(t_final_token *node);
 
 // Utils
 void	print_tab(char **cmd_line);

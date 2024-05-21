@@ -103,34 +103,70 @@ ReplaceEnvVars
 // Should we send the node->content ?
 // How do we change the value of the node->content ?
 
-char	*extract_var(char *str)
-{
-	size_t	i;
-	int		len;
-	char	*var_env;
-	char	*result;
+// char	*extract_var(char *str)
+// {
+// 	size_t	i;
+// 	int		len;
+// 	char	*var_env;
+// 	char	*result;
 
-	i = 0;
-	len = 0;
-	while (str[i])
-	{
-		if (str[i] == '$')
-		{
-			while (str[i] || str[i] != ' ')
-				len++;
-			i++;
-			var_env = ft_substr(str + i, 0, ft_strlen(str + i));
-			result = getenv(var_env);
-			if (result == NULL)
-				return (perror("This var. is not existing in the env.\n"),
-					free(var_env), NULL);
-			return (free(var_env), result);
-		}
-		i++;
-	}
-	perror("Can't get the var. of env.");
-	return (NULL);
+// 	i = 0;
+// 	len = 0;
+// 	while (str[i])
+// 	{
+// 		if (str[i] == '$')
+// 		{
+// 			while (str[i] || str[i] != ' ')
+// 				len++;
+// 			i++;
+// 			var_env = ft_substr(str + i, 0, ft_strlen(str + i));
+// 			result = getenv(var_env);
+// 			if (result == NULL)
+// 				return (perror("This var. is not existing in the env.\n"),
+// 					free(var_env), NULL);
+// 			return (free(var_env), result);
+// 		}
+// 		i++;
+// 	}
+// 	perror("Can't get the var. of env.");
+// 	return (NULL);
+// }
+
+char *extract_var(char *str)
+{
+    size_t i = 0;
+    size_t start = 0;
+    size_t len = 0;
+    char *var_env;
+    char *result;
+
+    while (str[i])
+    {
+        if (str[i] == '$')
+        {
+            start = ++i;  // Passe le caractère '$'
+            while (str[i] && str[i] != ' ')
+            {
+                len++;
+                i++;
+            }
+            var_env = ft_substr(str, start, len);
+            result = getenv(var_env);
+            free(var_env);
+            if (result == NULL)
+            {
+                perror("This var. is not existing in the env.\n");
+                return NULL;
+            }
+            return result;
+        }
+        i++;
+    }
+    perror("Can't get the var. of env.");
+    return NULL;
 }
+
+
 
 int	check_var(t_final_token *node)
 {
@@ -158,46 +194,103 @@ int	check_var(t_final_token *node)
 	return (1);
 }
 
-char	*get_the_var_of_env(t_final_token *node)
-{
-	t_final_token	*tmp;
-	char	*var;
-	size_t	i;
-	int	len = 0;
-	tmp = node;
-	// if (check_var(node) == 1)
-	// {
-	// 	perror("Can't get var. of env bce of quotes\n");
-	// 	exit(EXIT_FAILURE);
-	// }
-	while (tmp)
-	{
 
-		i = -1;
-		while (tmp->content[++i])
-		{
-			while (tmp->content[i] == ' ')
-				i++;
-			len = len_of_var_of_env(tmp->content);
-			var = extract_var(tmp->content + i);
-			if (var == NULL)
-				return (NULL);
-			printf("var = %s\n", var);
-			printf("i = %c - %d\n", tmp->content[i], len);
-			// replace_var_of_env(tmp->content, var, i);
-			if (tmp->content[i + 2] == 0)
-				tmp->content = ft_strdup(var);
-			else
-				tmp->content = ft_strjoin(var, tmp->content + i);
-			printf("var d'env changee :%s \n", tmp->content);
-			if (!var)
-				return (NULL);
-			return (var);
-		}
-		tmp = tmp->next;
-	}
-	return (perror("Can't get this var.\n"), NULL);
+// enfait j'suuis trop con g oublie de laisser le echo
+// regarder quand j'ai plusieurs variables d'environnement + pk echo ne l'ecrit pas
+// si $ sans cmd avant -> preciser que c'est un directory.
+void	get_the_var_of_env(t_final_token *node)
+{
+    t_final_token *tmp = node;
+    char *var;
+    size_t i;
+    int len;
+	char *temp;
+	char *final;
+
+    while (tmp)
+    {
+        i = 0;
+        while (tmp->content[i])
+        {
+            while (tmp->content[i] == ' ')
+                i++;
+            if (tmp->content[i] == '$')
+            {
+				if (tmp->content[0] == '$')
+				{
+					len = len_of_var_of_env(tmp->content);
+					var = extract_var(tmp->content);
+					if (var == NULL)
+						return ;
+               		 if (tmp->content[i + len + 1] == 0)
+					{
+						printf("bash:  %s: Is a directory\n", var);
+                    	tmp->content = ft_strdup(var);
+					}
+                	else
+					{
+						final = ft_strdup(var);
+                   		tmp->content = ft_strjoin(tmp->content + i + len + 1, final);
+					}
+					// tmp = tmp->next;
+				}
+				else 
+				{
+					temp = ft_strndup(tmp->content, i);
+					// printf("temp = %s\n", temp);
+                	len = len_of_var_of_env(tmp->content + i);
+                	var = extract_var(tmp->content + i);
+                	if (var == NULL)
+                	    return ;
+                	// printf("var = %s\n", var);
+                // replace_var_of_env(tmp->content, var, i);
+                	if (tmp->content[i + len + 1] == 0)
+					{
+						final = ft_strjoin(temp, var);
+						// printf("final = %s\n", final);
+                	    tmp->content = ft_strdup(final);
+					}
+                	else
+					{
+						final = ft_strjoin(temp, var);
+               	    	tmp->content = ft_strjoin(final, tmp->content + i + len - 2);
+					}
+					// tmp = tmp->next;
+				}
+                // printf("var d'env changee :%s \n", tmp->content);
+
+            }
+            i++;
+        }
+        tmp = tmp->next;
+    }
+    // perror("Can't get this var.\n");
 }
+
+// char	*get_the_var_of_env(t_final_token *node)
+// {
+// 	t_final_token	*current = node;
+// 	char			*var;
+// 	size_t			i;
+// 	int				len;
+// 	char			*temp;
+
+// 	while (current)
+// 	{
+// 		i = 0;
+// 		while (current->content[i])
+// 		{
+// 			while(current->content[i] == ' ')
+// 				i++;
+// 			if (current->content[i] == '$')
+// 			{
+// 				temp = ft_strndup(current->content, i);
+// 				len = 
+// 			}
+// 		}
+// 	}
+// }
+
 
 void	replace_var_of_env(char *content, char *var, int i)
 {
@@ -224,13 +317,15 @@ int		len_of_var_of_env(char *content)
 	{
 		if (content[i] == '$')
 		{
-			while (content[i] && content[i] != ' ')
+			i++;
+			while (content[i] && content[i] != ' ' && content[i] != '$')
 			{
 				len++;
 				i++;
 			}
 		}
-		i++;
+		else 
+			i++;
 	}
 	return (len);
 }

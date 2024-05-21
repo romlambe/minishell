@@ -91,7 +91,7 @@ int		main(int argc, char **argv, char **env)
 		token = head;
 		// printf("token = %s\n", token->content);
 		clean_token = copy_lst(token);
-		print_clean_lst(clean_token);
+		// print_clean_lst(clean_token);
 		test_redirection_input(clean_token);
 		final_token = final_clean_node(clean_token);
 		// check_line(&clean_token, env, &exit_code);
