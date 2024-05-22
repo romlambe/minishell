@@ -12,21 +12,39 @@
 
 #include "../minishell.h"
 
-void	test_redirection_input(t_clean_token *clean_node)
+void    test_redirection_input(t_clean_token *clean_node)
 {
-	while (clean_node && clean_node->next)
-	{
-		if (clean_node->type == INPUT && clean_node->next->type == INPUT)
-			redirection_input(clean_node);
-		else if (clean_node->type == OUTPUT && clean_node->next->type == OUTPUT)
-			redirection_output(clean_node);
-		else if (clean_node->type == APPEND && clean_node->next->type == APPEND) // BUT CAN BE ALSO APPEND & OUTPUT or else.
-			redirection_append(clean_node);
-		clean_node = clean_node->next;
-	}
+    while (clean_node && clean_node->next)
+    {
+        if ((clean_node->type == INPUT && clean_node->next->type == INPUT)
+        || (clean_node->type == INPUT && clean_node->next->type == HERE_DOC))
+            redirection_input(clean_node);
+        else if ((clean_node->type == OUTPUT && clean_node->next->type == OUTPUT)
+        || (clean_node->type == OUTPUT && clean_node->next->type == APPEND))
+            redirection_output(clean_node);
+        else if ((clean_node->type == APPEND && clean_node->next->type == APPEND)
+        || (clean_node->type == APPEND && clean_node->next->type == OUTPUT))
+            redirection_append(clean_node);
+        clean_node = clean_node->next;
+    }
 }
 
 void	redirection_input(t_clean_token *clean_node)
+{
+	int	filein;
+
+	filein = 0;
+	filein = open(clean_node->content, O_RDONLY, 0644);
+
+	if (filein == -1)
+	{
+		perror("Erreur file");
+		exit(EXIT_FAILURE);
+	}
+	close(filein);
+}
+
+void	redirection_here_doc(t_clean_token *clean_node)
 {
 	int	filein;
 

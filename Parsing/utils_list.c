@@ -110,3 +110,30 @@ void    free_that_final_lst(t_final_token **token)
 	}
 	*token = NULL;
 }
+
+//gerer l'espace si par exemple "/// | //././"
+// finir correctement la ft pour "/...   -> ca n'existe pas"
+void	check_directory(t_token	*node)
+{
+	while(node)
+	{
+		if (node->type == CMD && only_slash(node->content) == 1)
+			printf("bash: %s: Is a directory\n", node->content);
+		node = node->next;
+	}
+}
+
+int	only_slash(char *content)
+{
+	int	i;
+
+	i = 0;
+	while (content[i])
+	{
+		if (content[i] == '/' || content[i] == '.')
+			i++;
+		else
+			return (0);
+	}
+	return (1);
+}

@@ -77,6 +77,7 @@ int		main(int argc, char **argv, char **env)
 		// printf("%s|\n", token->content);
 		manage_node(token);
 		clean_spaces2(token);
+		check_directory(token);
 		if (verif_pipe(token) == 1)
         {
             rl_on_new_line();

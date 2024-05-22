@@ -265,4 +265,10 @@ char *clean_quote(char *input);
 void	replace_var_of_env(char *content, char *var, int i);
 int		len_of_var_of_env(char *content);
 
+
+// CHECK DIRECTORY 
+
+int		only_slash(char *content);
+void	check_directory(t_token	*node);
+
 #endif
