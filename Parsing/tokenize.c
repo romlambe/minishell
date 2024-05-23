@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeguerin <jeguerin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: romlambe <romlambe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/05 17:06:45 by romlambe          #+#    #+#             */
-/*   Updated: 2024/05/06 16:56:30 by jeguerin         ###   ########.fr       */
+/*   Updated: 2024/05/23 16:28:52 by romlambe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,14 +144,14 @@ int tokenize_arg(t_token **token, char *input, int i)
 	// int flag = 0;
 	// printf("taille de start %d\n", start);
 	// printf("taille de end avant: %d\n", end);
-	if (input[end] == '"')
-	{
-		end++;
-		while (input[end] || input[end] == '"')
-			end++;
-	}
-	else
-		while((input[end] && input[end] != '|' && input[end] != '<' && input[end] != '>'))
+	// if (input[end] == '"')
+	// {
+	// 	end++;
+	// 	while (input[end] || input[end] == '"')
+	// 		end++;
+	// // }
+	// else
+		while((input[end]))
 			end++;
 	arg = ft_strndup(input + start, end - start);
 	// printf("arg: %s\n", arg);

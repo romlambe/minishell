@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeguerin <jeguerin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: romlambe <romlambe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 14:14:33 by jeguerin          #+#    #+#             */
-/*   Updated: 2024/05/16 19:35:52 by jeguerin         ###   ########.fr       */
+/*   Updated: 2024/05/23 16:22:34 by romlambe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ int		main(int argc, char **argv, char **env)
 		// printf("%s|\n", token->content);
 		manage_node(token);
 		clean_spaces2(token);
-		check_directory(token);
+		// check_directory(token);
 		if (verif_pipe(token) == 1)
         {
             rl_on_new_line();
@@ -92,7 +92,7 @@ int		main(int argc, char **argv, char **env)
 		token = head;
 		// printf("token = %s\n", token->content);
 		clean_token = copy_lst(token);
-		// print_clean_lst(clean_token);
+		print_clean_lst(clean_token);
 		test_redirection_input(clean_token);
 		final_token = final_clean_node(clean_token);
 		// check_line(&clean_token, env, &exit_code);

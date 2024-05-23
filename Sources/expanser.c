@@ -179,8 +179,10 @@ char *extract_var(char *str)
             free(var_env);
             if (result == NULL)
             {
-                printf("\n");
-                return NULL;
+                free(result);
+                result = strdup("\n");
+                // printf("\n");
+                // return NULL;
             }
             return strdup(result);  // Return a copy of the result
         }
@@ -221,7 +223,6 @@ void get_the_var_of_env(t_final_token *node)
                     tmp->content = realloc(tmp->content, strlen(final) + 1);
                     strcpy(tmp->content, final);
 					printf("bash: %s: Is a directory\n", final);
-                    free(final);
                 }
                 else
                 {
@@ -233,7 +234,6 @@ void get_the_var_of_env(t_final_token *node)
                     free(tmp->content);
                     tmp->content = final;
                     free(temp);
-                    free(final);
                 }
                 free(var);
             }

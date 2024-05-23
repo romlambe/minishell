@@ -27,6 +27,11 @@
 # include <fcntl.h>
 # include <signal.h>
 
+typedef enum e_state_machine
+{
+	reg, quote, dquote
+}	t_sm;
+
 typedef enum
 {
 	CMD,
