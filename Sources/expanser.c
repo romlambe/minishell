@@ -267,9 +267,48 @@ int len_of_var_of_env(char *content)
 }
 
 
+// Enlever le niveau de quote 
 
+char   *remove_first_level_quote(char *content)
+{
+    int     i;
+    int     j;
+    int     single_quote;
+    int     double_quote;
+    char    *temp;
 
+    i = 0;
+    j = 0;
+    single_quote = 0;
+    double_quote = 0;
+    temp = (char *)malloc(ft_strlen(content) + 1);
+    if (!temp)
+    {
+        perror("malloc");
+        return NULL;
+    }
+    while (content[i])
+    {
+        if (content[i] == '\'' && !double_quote)
+            single_quote = !single_quote;
+        else if (content[i] == '"' && !single_quote)
+            double_quote = !double_quote;
+        else
+            temp[j++] = content[i];
+        i++;
+    }
+    temp[j] = 0;
+    return (temp);
+}
 
+void    remove_quote(t_final_token *token)
+{
+    while(token)
+    {
+        token->content = remove_first_level_quote(token->content);
+        token = token->next;
+    }
+}
 
 /*
 Expanser

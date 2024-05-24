@@ -6,7 +6,7 @@
 /*   By: romlambe <romlambe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/05 17:06:45 by romlambe          #+#    #+#             */
-/*   Updated: 2024/05/23 16:28:52 by romlambe         ###   ########.fr       */
+/*   Updated: 2024/05/24 09:36:32 by romlambe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,7 @@ int	tokenize_pipe(t_token **token, int i)
 	return (i);
 }
 
-int tokenize_arg(t_token **token, char *input, int i)
+int tokenize_arg(t_token **token, char *input, int i, t_sm handle_quote)
 {
 	int start;
 	int end;
@@ -151,16 +151,23 @@ int tokenize_arg(t_token **token, char *input, int i)
 	// 		end++;
 	// // }
 	// else
-		while((input[end]))
-			end++;
+	// set_quotes_state(input, i, handle_quote);
+	while((input[end]))
+	{
+		set_quotes_state(input, end, &handle_quote);
+		if (handle_quote == reg && (input[end] == '>' || input[end] == '<' || input[end] == '|'))
+			break;
+		end++;
+	}
 	arg = ft_strndup(input + start, end - start);
 	// printf("arg: %s\n", arg);
 	new = init_node(arg, CMD);
 	add_back(token, new);
 	free(arg);
-	if (input[end] == 0)
-		return (end);
-	else
-		return (end);
+	return (end);
+	// if (input[end] == 0)
+	// 	return (end);
+	// else
+	// 	return (end);
 }
 

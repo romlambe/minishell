@@ -234,7 +234,7 @@ int				tokenize_input(t_token **token, char *input, int i);
 
 // TOKENIZER ARG PIPE
 int				tokenize_pipe(t_token **token, int i);
-int				tokenize_arg(t_token **token, char *input, int i);
+int				tokenize_arg(t_token **token, char *input, int i, t_sm handle_quote);
 
 // EXTRACT CMD
 t_token			*extract_cmd(t_token **token, char *input);
@@ -275,5 +275,10 @@ int		len_of_var_of_env(char *content);
 
 int		only_slash(char *content);
 void	check_directory(t_token	*node);
+
+// QUOTE
+void	set_quotes_state(char *curr_char, int i, t_sm *handle_quote);
+char    *remove_first_level_quote(char *content);
+void    remove_quote(t_final_token *token);
 
 #endif
