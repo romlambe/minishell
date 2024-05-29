@@ -248,10 +248,11 @@ void			manage_node(t_token *token);
 
 // REDIRECTION
 void			test_redirection_input(t_clean_token *clean_node);
-void			redirection_input(t_clean_token *clean_node);
+int				redirection_input(t_clean_token *clean_node);
 void			redirection_output(t_clean_token *clean_node);
 void			redirection_append(t_clean_token *clean_node);
 int				input_in_bloc(t_clean_token *token, int i);
+void			redirection_here_doc(t_clean_token *clean_node, int i);
 
 // INIT FINAL NODE
 t_final_token	*final_clean_node(t_clean_token *token);

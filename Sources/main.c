@@ -6,7 +6,7 @@
 /*   By: romlambe <romlambe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 14:14:33 by jeguerin          #+#    #+#             */
-/*   Updated: 2024/05/24 15:55:53 by romlambe         ###   ########.fr       */
+/*   Updated: 2024/05/29 11:03:27 by romlambe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,7 @@ int		main(int argc, char **argv, char **env)
 		test_redirection_input(clean_token);
 		final_token = final_clean_node(clean_token);
 		// check_line(&clean_token, env, &exit_code);
+
 		get_the_var_of_env(final_token);
 		remove_quote(final_token);
 		execute_commands_with_pipes_and_redirections(&final_token, minishell, &exit_code);

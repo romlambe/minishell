@@ -76,3 +76,4 @@ void	parent_here_doc(int *pfd, char *cmd, t_minishell *exit_code)
 		exit_code->last_exit_status = WEXITSTATUS(exit_status);
 	// printf("exit_code->last_exit_status = %d\n", exit_code->last_exit_status);
 }
+
