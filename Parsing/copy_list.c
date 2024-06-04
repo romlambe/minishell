@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   copy_list.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: romlambe <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: romlambe <romlambe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/05 17:09:29 by romlambe          #+#    #+#             */
-/*   Updated: 2024/05/15 15:43:39 by romlambe         ###   ########.fr       */
+/*   Updated: 2024/06/04 18:15:45 by romlambe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,10 @@ t_clean_token *copy_lst(t_token *token)
 					printf("syntax error \n");
 					return (NULL);
 				}
-                content = ft_strdup(token->content);
+                content = token->content;
                 t_clean_token *new = init_clean_node(content, token->type);
                 add_clean_back(&clean_list, new);
-                free(content);
+                // free(content);
             }
             token = token->next;
         }
@@ -50,10 +50,10 @@ t_clean_token *copy_lst(t_token *token)
 					printf("syntax error &&\n");
 					return (NULL);
 				}
-                content = ft_strdup(token->content);
+                content = token->content;
                 t_clean_token *new = init_clean_node(content, token->type);
                 add_clean_back(&clean_list, new);
-                free(content);
+                // free(content);
             }
             token = token->next;
         }
@@ -69,10 +69,10 @@ t_clean_token *copy_lst(t_token *token)
 					printf ("syntax error\n");
 					return (NULL);
 				}
-                content = ft_strdup(token->content);
+                content = token->content;
                 t_clean_token *new = init_clean_node(content, token->type);
                 add_clean_back(&clean_list, new);
-                free(content);
+                // free(content);
             }
             token = token->next;
         }
@@ -82,10 +82,10 @@ t_clean_token *copy_lst(t_token *token)
         {
 			if (token->type == PIPE)
 			{
-				content = ft_strdup("|");
+				content = "|";
                 t_clean_token *new = init_clean_node(content, token->type);
                 add_clean_back(&clean_list, new);
-                free(content);
+                // free(content);
 			}
             token = token->next; // Avancer pour sauter le pipe
         }
@@ -105,20 +105,20 @@ t_final_token *final_clean_node(t_clean_token *token)
         {
 			if (!token->next || (token->next->type != INPUT && token->next->type != HERE_DOC))
 			{
-            	content = ft_strdup(token->content);
+            	content = token->content;
             	t_final_token *new = init_final_node(content, token->type);
             	add_final_back(&final_token, new);
-            	free(content);
+            	// free(content);
 			}
             token = token->next;
         }
 
         while (token && token->type == CMD)
         {
-            content = ft_strdup(token->content);
+            content = token->content;
             t_final_token *new = init_final_node(content, token->type);
             add_final_back(&final_token, new);
-            free(content);
+            // free(content);
             token = token->next;
         }
 
@@ -126,20 +126,20 @@ t_final_token *final_clean_node(t_clean_token *token)
         {
             if (!token->next || token->next->type == PIPE)
             {
-                content = ft_strdup(token->content);
+                content = token->content;
                 t_final_token *new = init_final_node(content, token->type);
                 add_final_back(&final_token, new);
-                free(content);
+                // free(content);
             }
             token = token->next;
         }
 
         if (token && token->type == PIPE)
         {
-            content = ft_strdup("|");
+            content = "|";
             t_final_token *new = init_final_node(content, token->type);
             add_final_back(&final_token, new);
-            free(content);
+            // free(content);
             token = token->next;
         }
     }
@@ -158,7 +158,7 @@ t_final_token	*init_final_node(char *content, Token_type type)
 		perror("List has not been created\n");
 		exit(EXIT_FAILURE);
 	}
-	token->content = ft_strdup(content);
+	token->content = content;
 	if (token->content == NULL)
 	{
 		perror ("Memory allocation failed\n");

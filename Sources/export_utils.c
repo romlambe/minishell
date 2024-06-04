@@ -41,14 +41,14 @@ size_t	ft_size_env(char **env)
 	return (i);
 }
 
-void	sort_tab(t_minishell *minishell)
+void	sort_tab(char **env)
 {
 	size_t	i;
 	char	*temp;
-	char	**env;
+	// char	**env;
 
 	i = 0;
-	env = minishell->env;
+	// env = minishell->env;
 	while (env[i + 1])
 	{
 		if (env[i][0] > env[i + 1][0]
@@ -64,27 +64,47 @@ void	sort_tab(t_minishell *minishell)
 	}
 }
 
-void	modify_or_create(char **args, t_minishell *minishell, size_t i, size_t j)
+void	modify_or_create(char **args, t_minishell *minishell,
+	size_t i, size_t j)
 {
 	char	*var;
 	char	*new_var;
-	// char	**new_env;
+
 	new_var = ft_substr(args[i], 0, j + 1);
 	if (is_var_in_env(new_var, minishell) == 1)
 	{
 		var = check_value(args[i]);
-		minishell->env = modify_value_env(minishell, new_var, args[i] + j + 1);
+		modify_value_env(&minishell->env, new_var, args[i] + j + 1, minishell);
 		free(new_var);
-		free(var);
 	}
 	else
 	{
 		var = check_value(args[i]);
 		minishell->env = create_var_env(minishell, var);
-		free(var);
 		free(new_var);
 	}
-	return ;
+}
+
+char	*check_value(char *var)
+{
+	size_t	i;
+
+	i = 0;
+	while (var[i])
+	{
+		if (var[i] == '!')
+		{
+			printf("bash: %s: event not found\n", var + i);
+			return (ft_substr(var, 0, i));
+		}
+		else if (var[i] == ';')
+		{
+			printf("bash: %s: command not found\n", var + i);
+			return (ft_substr(var, 0, i));
+		}
+		i++;
+	}
+	return (var);
 }
 
 // int	main(int argc, char **argv, char **env)
@@ -111,17 +131,3 @@ void	modify_or_create(char **args, t_minishell *minishell, size_t i, size_t j)
 // 	// printf("Clean string : %s\n", result);
 // 	return(0);
 // }
-
-void	print_env(t_minishell *minishell)
-{
-	size_t	i;
-
-	i = 0;
-	sort_tab(minishell);
-	while (minishell->env[i])
-	{
-		printf("declare -x %s\n", minishell->env[i]);
-		i++;
-	}
-	return ;
-}

@@ -12,18 +12,21 @@
 
 #include "../minishell.h"
 
-void	create_pipes(char *cmd, t_minishell *minishell, t_minishell *exit_code, int output)
+void	create_pipes(char *cmd, t_minishell *minishell,
+	t_minishell *exit_code, int output)
 {
 	int	fd[2];
 	int	pid;
 
 	if (pipe(fd) == -1)
 	{
+		exit_code->last_exit_status = EXIT_FAILURE;
 		exit(EXIT_FAILURE);
 	}
 	pid = fork();
 	if (pid == -1)
 	{
+		exit_code->last_exit_status = EXIT_FAILURE;
 		exit(EXIT_FAILURE);
 	}
 	else if (pid == 0)

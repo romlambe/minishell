@@ -33,19 +33,6 @@ char	*ft_strcat(char *dst, const char *src, size_t size)
 	return (dst);
 }
 
-// void	print_lst(t_token *token)
-// {
-// 	t_token	*tmp;
-
-// 	tmp = token;
-// 	while (tmp)
-// 	{
-// 		printf("Chaque node content : %s\n", tmp->content);
-// 		printf("Chaque node type content : %u\n", tmp->type);
-// 		tmp = tmp->next;
-// 	}
-// }
-
 void	print_new_env(t_minishell *minishell)
 {
 	size_t	i;
@@ -83,4 +70,21 @@ void	print_tab(char **cmd_line)
 		printf("Voici ma ligne de cmd : %s\n", cmd_line[i]);
 		i++;
 	}
+}
+
+void	print_export_env(t_minishell *minishell)
+{
+	size_t	i;
+	char	**env_cpy;
+
+	env_cpy = realloc_env(minishell->env);
+	i = 0;
+	sort_tab(env_cpy);
+	while (env_cpy[i + 1])
+	{
+		printf("declare -x %s\n", env_cpy[i]);
+		i++;
+	}
+	free_tab(env_cpy);
+	return ;
 }

@@ -19,19 +19,20 @@ char	*get_path(char *cmd, t_minishell *minishell)
 	char	**path;
 	size_t	i;
 
-	path = select_path(minishell);
+	path = select_path(minishell, cmd);
 	i = 0;
 	if (!path)
+	{
+		minishell->last_exit_status = EXIT_FAILURE;
 		exit(EXIT_FAILURE);
+	}
 	while (path[i])
 	{
 		tmp_path = ft_strjoin(path[i], "/");
 		final_path = ft_strjoin(tmp_path, cmd);
 		free(tmp_path);
 		if (access(final_path, X_OK) == 0)
-		{
 			return (free_tab(path), final_path);
-		}
 		free(final_path);
 		i++;
 	}
@@ -40,26 +41,24 @@ char	*get_path(char *cmd, t_minishell *minishell)
 	return (NULL);
 }
 
-char	**select_path(t_minishell *minishell)
+char	**select_path(t_minishell *minishell, char *cmd)
 {
 	size_t	i;
 	size_t	j;
 	char	**all_path;
-	char	**env;
 
-	env = minishell->env;
 	i = 0;
-	while (env[i])
+	while (minishell->env[i])
 	{
 		j = 0;
-		while (env[i][j])
+		while (minishell->env[i][j])
 		{
-			if (env[i][j] == '=')
+			if (minishell->env[i][j] == '=')
 			{
-				if (ft_strncmp(env[i], "PATH", 4) == 0)
+				if (ft_strncmp(minishell->env[i], "PATH", 4) == 0)
 				{
 					j++;
-					all_path = ft_split(env[i] + j, ':');
+					all_path = ft_split(minishell->env[i] + j, ':');
 					return (all_path);
 				}
 			}
@@ -67,6 +66,5 @@ char	**select_path(t_minishell *minishell)
 		}
 		i++;
 	}
-	perror("Can't find the var. path in env.\n");
-	return (NULL);
+	return (printf("bash: %s: command not found\n", cmd), NULL);
 }
