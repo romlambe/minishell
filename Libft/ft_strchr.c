@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeguerin <jeguerin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/03 10:01:14 by jeguerin          #+#    #+#             */
-/*   Updated: 2024/05/19 17:22:35 by marvin           ###   ########.fr       */
+/*   Updated: 2024/06/07 09:20:00 by jeguerin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,20 +46,41 @@ int	ft_strnchr(const char *str, int c)
 	return (0);
 }
 
+// int	ft_strschr(const char *str, char *ligne)
+// {
+// 	int		i;
+// 	size_t	j;
+
+// 	i = 0;
+// 	j = 0;
+// 	while (str[i])
+// 	{
+// 		if (str[i] == ligne[j] && str[i + 1] == ligne[j + 1])
+// 			return (0);
+// 		else if (str[i] == ligne[j] && str[i + 1] == ligne[j + 1]
+// 			&& str[i + 2] == ligne[j + 2])
+// 			return (0);
+// 		i++;
+// 	}
+// 	return (i);
+// }
+
 int	ft_strschr(const char *str, char *ligne)
 {
-	int		i;
-	size_t	j;
+	int	i;
+	int	len_str;
+	int	len_ligne;
 
 	i = 0;
-	j = 0;
-	while (str[i])
+	len_str = ft_strlen(str);
+	len_ligne = ft_strlen(ligne);
+	while (i < len_str)
 	{
-		if (str[i] == ligne[j] && str[i + 1] == ligne[j + 1])
-			return (0);
-		else if (str[i] == ligne[j] && str[i + 1] == ligne[j + 1] 
-			&& str[i + 2] == ligne[j + 2])
-			return (0);
+		if (i + len_ligne <= len_str)
+		{
+			if (ft_strncmp(&str[i], ligne, len_ligne) == 0)
+				return (0);
+		}
 		i++;
 	}
 	return (i);

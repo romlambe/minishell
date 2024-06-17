@@ -12,28 +12,7 @@
 
 #include "../minishell.h"
 
-int	is_one_cmd(char *cmd)
-{
-	size_t	i;
-	int		is_option;
-
-	i = 0;
-	is_option = 0;
-	while (cmd[i])
-	{
-		if (cmd[i] == ' ' && ((cmd[i + 1] >= 65 && cmd[i + 1] <= 90)
-				|| (cmd[i + 1] >= 97 && cmd[i + 1] <= 122)))
-		{
-			is_option = 1;
-			return (is_option);
-		}
-		i++;
-	}
-	return (is_option);
-}
-
-void	exec_cmd_with_fork(char *cmd, t_minishell *minishell,
-	t_minishell *exit_code)
+void	exec_cmd_with_fork(char *cmd, t_minishell *minishell)
 {
 	char	**cmd_line;
 	int		pid;
@@ -41,7 +20,7 @@ void	exec_cmd_with_fork(char *cmd, t_minishell *minishell,
 	cmd_line = ft_split(cmd, ' ');
 	if (!cmd_line)
 	{
-		exit_code->last_exit_status = EXIT_FAILURE;
+		minishell->last_exit_status = EXIT_FAILURE;
 		exit(EXIT_FAILURE);
 	}
 	pid = fork();
@@ -49,29 +28,41 @@ void	exec_cmd_with_fork(char *cmd, t_minishell *minishell,
 	{
 		perror("Can't fork\n");
 		free_tab(cmd_line);
-		exit_code->last_exit_status = EXIT_FAILURE;
+		minishell->last_exit_status = EXIT_FAILURE;
 		exit(EXIT_FAILURE);
 	}
 	else if (pid == 0)
 		child_cmd_only(cmd_line, minishell, cmd);
 	else
-		parent_cmd_only(pid, exit_code);
+		parent_cmd_only(pid, minishell);
 	free_tab(cmd_line);
 }
 
 void	exec_absolute_path(char **cmd_line, char *cmd, t_minishell *minishell)
 {
-	// if (access(cmd, F_OK) == 0)
-	// {
-	// 	printf("bash: %s: command not found\n", cmd);
-	// 	minishell->last_exit_status = EXIT_FAILURE;
-	// 	exit(EXIT_FAILURE);
-	// }
-	if (execve(cmd, cmd_line, minishell->env) == -1)
+	char	*new_cmd;
+	size_t	j;
+	size_t	i;
+
+	new_cmd = (char *)ft_malloc(sizeof(char) * (ft_strlen(cmd) + 1));
+	i = -1;
+	j = 0;
+	while (cmd[++i])
+	{
+		if (cmd[i] != ' ')
+			new_cmd[j++] = cmd[i];
+		else
+			break ;
+	}
+	new_cmd[j] = '\0';
+	if (ft_strncmp(new_cmd, "./minishell", 11) == 0)
+		shell_level(minishell);
+	if (execve(new_cmd, cmd_line, minishell->env) == -1)
 	{
 		free_tab(cmd_line);
+		ft_free(new_cmd);
 		printf("bash: %s: command not found\n", cmd);
-		minishell->last_exit_status = EXIT_FAILURE;
+		minishell->last_exit_status = 127;
 		exit(EXIT_FAILURE);
 	}
 }
@@ -90,7 +81,7 @@ void	exec_relative_path(char **cmd_line, t_minishell *minishell)
 	if (execve(final_path, cmd_line, minishell->env) == -1)
 	{
 		free_tab(cmd_line);
-		free(final_path);
+		ft_free(final_path);
 		minishell->last_exit_status = EXIT_FAILURE;
 		exit(EXIT_FAILURE);
 	}
@@ -104,14 +95,14 @@ void	child_cmd_only(char **cmd_line, t_minishell *minishell, char *cmd)
 		exec_absolute_path(cmd_line, cmd, minishell);
 }
 
-void	parent_cmd_only(int pid, t_minishell *exit_code)
+void	parent_cmd_only(int pid, t_minishell *minishell)
 {
 	int	status;
 
 	status = 0;
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
-		exit_code->last_exit_status = WEXITSTATUS(status);
+		minishell->last_exit_status = WEXITSTATUS(status);
 	else
-		exit_code->last_exit_status = -1;
+		minishell->last_exit_status = -1;
 }

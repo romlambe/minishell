@@ -12,30 +12,22 @@
 
 #include "../minishell.h"
 
-void	print_echo_arg(char **cmd_with_options, t_minishell *exit_code)
+int	is_there_something_after_n(char *cmd)
 {
 	size_t	i;
 
-	i = -1;
-	while (cmd_with_options[++i])
+	i = 0;
+	while (cmd[i])
 	{
-		if (ft_strcmp(cmd_with_options[i], "echo") == 0)
-			i++;
-		if (ft_strschr(cmd_with_options[i], "$?") == 0
-			|| ft_strschr(cmd_with_options[i], "$?$") == 0)
-		{
-			printf("%d\n", exit_code->last_exit_status);
+		if (cmd[i] == '-' && (cmd[i + 1] && cmd[i + 1] == 'n'))
+			i += 2;
+		if (cmd[i] == '\0')
 			break ;
-		}
-		if (ft_strschr(cmd_with_options[i], "\\n") == 0)
-		{
-			how_many_back_slash(cmd_with_options[i]);
-			i++;
-		}
-		printf("%s ", cmd_with_options[i]);
-		if (cmd_with_options[i + 1] == NULL)
-			printf("\n");
+		if (cmd[i] != 'n')
+			return (1);
+		i++;
 	}
+	return (0);
 }
 
 void	builtin_echo(char *str, t_minishell *exit_code)
@@ -45,19 +37,23 @@ void	builtin_echo(char *str, t_minishell *exit_code)
 	cmd_with_options = ft_split(str, ' ');
 	if (cmd_with_options[1])
 	{
-		if ((ft_strschr(cmd_with_options[1], "-n") == 0
-				|| ft_strschr(cmd_with_options[0], "-n") == 0))
+		if (ft_strncmp(cmd_with_options[1], "-n", 2) == 0
+			&& is_there_something_after_n(cmd_with_options[1]) == 0)
 			handle_echo_with_n(cmd_with_options);
 		else if (cmd_with_options[1]
 			&& (ft_strcmp(cmd_with_options[1], "-n") != 0)
 			&& (ft_strcmp(cmd_with_options[0], "-n") != 0))
 			print_echo_arg(cmd_with_options, exit_code);
 	}
-	else if (ft_strcmp(cmd_with_options[0], "echo") != 0)
+	else if (ft_strcmp(cmd_with_options[0], "echo") != 0
+		&& ft_strcmp(cmd_with_options[0], "/bin/echo") != 0)
+	{
+		exit_code->last_exit_status = 127;
 		printf("%s: command not found\n", cmd_with_options[0]);
+	}
 	else
 		printf("\n");
-	free_tab(cmd_with_options);
+	ft_free(cmd_with_options);
 }
 
 void	handle_echo_with_n(char **cmd)
@@ -85,7 +81,7 @@ char	*copy_str_without_first_quote(char *source)
 	source_length = strlen(source);
 	j = 0;
 	i = -1;
-	result = (char *)malloc(source_length + 1);
+	result = (char *)ft_malloc(source_length + 1);
 	if (result == NULL || source == NULL)
 		return (NULL);
 	while (source[++i] && i < source_length)
@@ -114,7 +110,7 @@ char	*copy_string_without_char(const char *source, char exclude_char)
 	i = 0;
 	if (source == NULL)
 		return (NULL);
-	result = (char *)malloc(source_length + 1);
+	result = (char *)ft_malloc(source_length + 1);
 	if (result == NULL)
 		return (NULL);
 	while (source[i] && i < source_length)

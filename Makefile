@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jeguerin <jeguerin@student.42.fr>          +#+  +:+       +#+         #
+#    By: romlambe <romlambe@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/03 18:59:35 by jeza              #+#    #+#              #
-#    Updated: 2024/05/29 16:45:50 by jeguerin         ###   ########.fr        #
+#    Updated: 2024/06/11 16:54:24 by romlambe         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,12 +32,18 @@ SRCS = 	Sources/main.c Sources/utils.c \
 		Sources/exec_builtin.c Sources/manage_input.c Sources/manage_output.c \
 		Sources/get_var_env.c \
 		Parsing/clean_nodes.c Parsing/copy_list.c Parsing/extract_cmd.c \
-		Parsing/init_clean_nodes.c Parsing/init_nodes.c \
+		Parsing/init_clean_nodes.c Parsing/clean_nodes2.c Parsing/init_nodes.c \
 		Parsing/redirection.c Parsing/tokenize.c Parsing/utils_list.c \
-		Sources/echo_utils.c \
+		Sources/echo_utils.c  Parsing/realloc_env.c Parsing/tokenize2.c \
+		Parsing/handle_redirection.c Parsing/redirection_utils.c Parsing/copy_final_list.c\
+		Parsing/init_final_nodes.c Parsing/manage_final_nodes.c\
+		Sources/var_env.c Sources/var_env_utils.c Sources/quotes.c \
+		Sources/exec_multiple_cmd.c Sources/exec_process_by_process.c Sources/cd_utils2.c \
+		Sources/export_utils3.c Sources/builtin_exit.c Sources/builtin_unset.c \
+		Sources/var_env2.c Sources/main_utils.c Sources/free_lst.c\
 
-GETNEXTLINE = get_next_line/get_next_line.c get_next_line/get_next_line_utils.c
 LIBFT = Libft/libft.a
+GETNEXTLINE = get_next_line/get_next_line.c get_next_line/get_next_line_utils.c
 PRINTF = ft_printf/libftprintf.a
 
 OBJS = $(SRCS:.c=.o)
@@ -63,7 +69,7 @@ $(PRINTF):
 # 	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(PRINTF) $(GETNEXTLINE_OBJ) -o $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT) $(PRINTF) $(GETNEXTLINE_OBJ)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(PRINTF) $(GETNEXTLINE_OBJ) -o $(NAME) -lreadline
+	$(CC) $(CFLAGS) $(OBJS) $(GETNEXTLINE_OBJ) $(LIBFT) $(PRINTF) -o $(NAME) -lreadline
 
 # Regle pour nettoyer les fichiers objets.
 clean:

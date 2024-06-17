@@ -6,7 +6,7 @@
 /*   By: jeguerin <jeguerin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 11:07:04 by jeguerin          #+#    #+#             */
-/*   Updated: 2024/05/13 13:36:38 by jeguerin         ###   ########.fr       */
+/*   Updated: 2024/06/06 17:02:10 by jeguerin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char	*ft_strndup(const char *s, size_t n)
 
 	if (s == NULL || n == 0)
 		return (NULL);
-	dest = (char *)malloc(sizeof(char) * (n + 1));
+	dest = (char *)ft_malloc(sizeof(char) * (n + 1));
 	if (dest == NULL)
 		return (NULL);
 	i = 0;

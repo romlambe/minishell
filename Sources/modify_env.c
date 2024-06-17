@@ -21,8 +21,6 @@ No need to do a copy of env because we use the one from our main.
 And we don't use getenv() who get env. var. from the "real" env.
 */
 
-//strcmp de SHLVL=
-// atoi, puis itoa puis strcpy.
 void	shell_level(t_minishell *minishell)
 {
 	size_t	i;
@@ -41,52 +39,12 @@ void	shell_level(t_minishell *minishell)
 	}
 }
 
-// char	**change_shell_level(char **env)
-// {
-// 	size_t	i;
-// 	size_t	j;
-// 	char	*str;
+int	len_of_var_of_env(char *str)
+{
+	int	len;
 
-// 	i = 0;
-// 	while (env[i])
-// 	{
-// 		j = 0;
-// 		while (env[i][j])
-// 		{
-// 			if (env[i][j] == '=')
-// 			{
-// 				str = ft_substr(env[i], 0, j);
-// 				if (ft_strcmp(str, "SHLVL") == 0)
-// 				{
-// 					j++;
-// 					if (env[i][j] == '1')
-// 					{
-// 						j++;
-// 						return (free(str), env);
-// 					}
-// 				}
-// 				free(str);
-// 			}
-// 			j++;
-// 		}
-// 		i++;
-// 	}
-// 	return (perror("Can't modify shell level in env.\n"), NULL);
-// }
-
-/*
-La variable d'environnement "SHLVL" est utilisée pour suivre 
-le niveau de profondeur des shells 
-(interpréteurs de commandes) dans un système UNIX. Lorsque vous 
-exécutez un nouveau shell 
-(comme bash, zsh, etc.), la valeur de "SHLVL" est augmentée de 
-1. Cela permet de savoir combien 
-de shells sont empilés les uns sur les autres.
-
-Maintenant, en modifiant "SHLVL" de 1 à 2 dans votre environnement, 
-vous indiquez essentiellement 
-que vous avez lancé un nouveau shell à l'intérieur d'un shell existant. 
-Cela peut se produire, 
-par exemple, lorsque vous lancez votre minishell depuis un autre shell 
-déjà ouvert sur votre système.
-*/
+	len = 0;
+	while (str[len] && (isalnum(str[len]) || str[len] == '_'))
+		len++;
+	return (len);
+}

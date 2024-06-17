@@ -3,22 +3,36 @@
 /*                                                        :::      ::::::::   */
 /*   ft_calloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeguerin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeguerin <jeguerin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/03 13:01:29 by jeguerin          #+#    #+#             */
-/*   Updated: 2023/10/05 08:57:04 by jeguerin         ###   ########.fr       */
+/*   Created: 2024/06/07 10:02:33 by jeguerin          #+#    #+#             */
+/*   Updated: 2024/06/07 10:07:15 by jeguerin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdlib.h>
+#include <stdio.h>
 #include "libft.h"
 
-void	*ft_calloc(size_t nmemb, size_t size)
+typedef struct s_reg
 {
-	char	*p;
+	void	**ptrs;
+	int		size;
+}			t_reg;
 
-	p = (char *)malloc(size * nmemb);
-	if (p == 0)
+void	*ft_calloc(size_t count, size_t size)
+{
+	void	*ptr;
+	size_t	i;
+
+	i = 0;
+	ptr = ft_malloc(count * size);
+	if (ptr == NULL)
 		return (NULL);
-	ft_bzero(p, nmemb * size);
-	return (p);
+	while (i < count * size)
+	{
+		((char *)ptr)[i] = 0;
+		i++;
+	}
+	return (ptr);
 }
